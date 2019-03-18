@@ -66,9 +66,11 @@ namespace SpiderWeChat
                 btn_Start.Enabled = false;
                 btn_CloseConnect.Enabled = true;
                double num = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
-
-                ServerPath = "wss://ws02.wxb.com/web/8d71945f103e041f9b6f139e39b8b9f6?t="+Convert.ToInt32(num) +"&uid=1857413&suid=0";
-                websocket = new WebSocket4Net.WebSocket("wss://ws02.wxb.com/web/8d71945f103e041f9b6f139e39b8b9f6?t=1552891701&uid=1857413&suid=0");
+                String ServerPath = txt_IP.Text;
+                if (string.IsNullOrEmpty(ServerPath)) {
+                    ServerPath = "wss://ws02.wxb.com/web/8d71945f103e041f9b6f139e39b8b9f6?t=" + Convert.ToInt32(num) + "&uid=1857413&suid=0";
+                }
+                websocket = new WebSocket4Net.WebSocket(ServerPath);
                 websocket.Opened += WebSocket_Opened;
                 websocket.Closed += WebSocket_Closed;
                 websocket.Error += websocket_Error;
