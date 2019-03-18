@@ -123,7 +123,7 @@ namespace SpiderWeChat
                     content = content.Replace("\"", "").Replace(":", "").Replace("\\n", "");
                     txt_Msg.AppendText(content + Environment.NewLine);
 
-                    string Path = "down\\船源数据("+ DateTime.Now.ToString("yyyy-MM-dd") + ").txt";
+                    string Path = "down\\船源数据.txt";
                     if (!File.Exists(Path))
                     {
                         using (new FileStream(Path, FileMode.Create, FileAccess.Write)) { };
