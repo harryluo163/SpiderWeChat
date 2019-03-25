@@ -23,12 +23,14 @@ namespace SpiderWeChat
         //自动重置事件类    
         //主要用到其两个方法 WaitOne() 和 Set() , 前者阻塞当前线程，后者通知阻塞线程继续往下执行  
         AutoResetEvent autoEvent = new AutoResetEvent(false);
+        DateTime n = DateTime.Now;
         public Form1()
         {
             InitializeComponent();
             Control.CheckForIllegalCrossThreadCalls = false;
-            tm.Interval = 1;
+            tm.Interval = 5000;
             tm.Tick += new EventHandler(tm_Tick);
+            tm.Start();
             btn_CloseConnect.Enabled = false;
         }
         //计时器 事件  
@@ -39,6 +41,8 @@ namespace SpiderWeChat
                 txt_Msg.Text = "";
                 txt_Msg.AppendText("清空缓存" + Environment.NewLine);
             }
+           
+
             autoEvent.Set(); //通知阻塞的线程继续执行  
         }
 
@@ -65,7 +69,7 @@ namespace SpiderWeChat
             {
                 btn_Start.Enabled = false;
                 btn_CloseConnect.Enabled = true;
-               double num = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
+                double num = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
                 String ServerPath = txt_IP.Text;
                 if (string.IsNullOrEmpty(ServerPath)) {
                     ServerPath = "wss://ws02.wxb.com/web/8d71945f103e041f9b6f139e39b8b9f6?t=" + Convert.ToInt32(num) + "&uid=1857413&suid=0";
@@ -74,6 +78,7 @@ namespace SpiderWeChat
                 websocket.Opened += WebSocket_Opened;
                 websocket.Closed += WebSocket_Closed;
                 websocket.Error += websocket_Error;
+                websocket.DataReceived += websocket_DataReceived;
                 websocket.MessageReceived += WebSocket_MessageReceived;
                 Start();
 
@@ -117,7 +122,8 @@ namespace SpiderWeChat
              txt_Msg.AppendText( e.Message + Environment.NewLine);
             string content = GetStr(e.Message, "text", "}");
             if (!string.IsNullOrEmpty(content)) {
-               txt_Msg.AppendText(content + Environment.NewLine);
+                n = DateTime.Now;
+                txt_Msg.AppendText(content + Environment.NewLine);
                 string regular = ".*1[2|3|4|5|6|7|8][0-9]{9}.*";
                 Regex mobi = new Regex(regular);
                 Match m = mobi.Match(content);
@@ -162,6 +168,16 @@ namespace SpiderWeChat
             txt_Msg.AppendText("websocket_Error:");
         }
         /// <summary>
+        /// Socket事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void websocket_DataReceived(object sender, DataReceivedEventArgs e)
+        {
+            txt_Msg.AppendText("websocket_Error:");
+        }
+
+        /// <summary>
         /// Socket打开事件
         /// </summary>
         /// <param name="sender"></param>
@@ -181,11 +197,19 @@ namespace SpiderWeChat
                 {
                     if (websocket.State != WebSocket4Net.WebSocketState.Open && websocket.State != WebSocket4Net.WebSocketState.Connecting)
                     {
-                         txt_Msg.AppendText(" Reconnect websocket WebSocketState:" + websocket.State);
+                        txt_Msg.AppendText(" Reconnect websocket WebSocketState:" + websocket.State);
                         websocket.Close();
                         websocket.Open();
-                        Console.WriteLine("正在重连");
+                        txt_Msg.AppendText("正在重连" + Environment.NewLine);
+
                     }
+                    else if ((DateTime.Now-n).TotalMilliseconds / 1000>10) {
+                        txt_Msg.AppendText(" Reconnect websocket WebSocketState:" + websocket.State);
+                        websocket.Close();
+                        websocket.Open();
+                        txt_Msg.AppendText("正在重连" + Environment.NewLine);
+                    }
+
                 }
                 catch (Exception ex)
                 {
