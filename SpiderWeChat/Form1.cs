@@ -50,7 +50,9 @@ namespace SpiderWeChat
  
 
         #region 向外传递数据事件
+#pragma warning disable CS0067 // 从不使用事件“Form1.MessageReceived”
         public event Action<string> MessageReceived;
+#pragma warning restore CS0067 // 从不使用事件“Form1.MessageReceived”
         #endregion
         /// <summary>
         /// 检查重连线程
@@ -237,7 +239,9 @@ namespace SpiderWeChat
             });
         }
 
+#pragma warning disable CS0108 // '“Form1.Dispose()”隐藏继承的成员“Component.Dispose()”。如果是有意隐藏，请使用关键字 new。
         public void Dispose()
+#pragma warning restore CS0108 // '“Form1.Dispose()”隐藏继承的成员“Component.Dispose()”。如果是有意隐藏，请使用关键字 new。
         {
             this._isRunning = false;
             try
