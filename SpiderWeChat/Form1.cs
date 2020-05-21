@@ -72,7 +72,8 @@ namespace SpiderWeChat
                 double num = ((DateTime.Now - new DateTime(1970, 1, 1)).TotalMilliseconds) / 1000;
                 String ServerPath = txt_IP.Text;
                 if (string.IsNullOrEmpty(ServerPath)) {
-                    ServerPath = "wss://ws02.wxb.com/web/8d71945f103e041f9b6f139e39b8b9f6?t=" + Convert.ToInt32(num) + "&uid=1857413&suid=0";
+                      ServerPath = "wss://ws03.wxb.com/web/58236f0305c2a676ae1a8a57e19f2eb9?t=" + Convert.ToInt32(num) + "&uid=1857413&suid=0";
+                    //ServerPath = "wss://ws03.wxb.com/web/bcde84d9c026b24e3d5a787fa46cff9d?t=1590031306&uid=1857413&suid=0";
                 }
                 websocket = new WebSocket4Net.WebSocket(ServerPath);
                 websocket.Opened += WebSocket_Opened;
@@ -104,6 +105,7 @@ namespace SpiderWeChat
                 this._isRunning = true;
                 this._thread = new Thread(new ThreadStart(CheckConnection));
                 this._thread.Start();
+              
             }
             catch (Exception ex)
             {
@@ -184,7 +186,12 @@ namespace SpiderWeChat
         /// <param name="e"></param>
         void WebSocket_Opened(object sender, EventArgs e)
         {
-             txt_Msg.AppendText(" websocket_Opened");
+            SendMessage("{\"action\":\"setCurrentTalkKey\",\"data\":\"wxid_35b1am3lpfsr22 | 6416677712@chatroom\"}");
+
+            SendMessage("{\"action\":\"accounts\"}");
+
+            SendMessage("{\"action\":\"active\"}");
+            txt_Msg.AppendText(" websocket_Opened");
         }
         /// <summary>
         /// 检查重连线程

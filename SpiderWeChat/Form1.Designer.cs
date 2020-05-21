@@ -70,6 +70,8 @@
             this.txt_IP.Name = "txt_IP";
             this.txt_IP.Size = new System.Drawing.Size(401, 21);
             this.txt_IP.TabIndex = 3;
+            this.txt_IP.Text = "wss://ws03.wxb.com/web/8f2b8ab60b6e10bc6397223bcea6b602?t=1590041530&uid=1857413&" +
+    "suid=0";
             // 
             // lbl1
             // 
